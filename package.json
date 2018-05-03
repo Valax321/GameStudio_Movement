@@ -1,0 +1,30 @@
+{
+  "name": "gamestudio_pointandclick",
+  "version": "1.0.0",
+  "description": "Point and Click Game",
+  "main": "main.js",
+  "build": {
+  "appId": "com.whilefalsestudios.pointandclick",
+      "mac": {
+        "category": "public.app-category.games"
+      },
+      "win": {
+        "target": "portable"
+      }
+},
+  "scripts": {
+    "test": "electron .",
+    "dist": "electron-builder"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://bitbucket.org/Valax321/gamestudio_pointandclick.git"
+  },
+  "author": "Andrew Castillo",
+  "license": "ISC",
+  "homepage": "https://bitbucket.org/Valax321/gamestudio_pointandclick#readme",
+  "devDependencies": {
+    "electron": "^1.8.4",
+    "electron-builder": "^20.8.1"
+  }
+}

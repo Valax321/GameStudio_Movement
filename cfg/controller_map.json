@@ -1,0 +1,28 @@
+{
+    "ps4": {
+        "buttons": {
+            "face_bottom": 1,
+            "face_top": 3,
+            "face_right": 2,
+            "face_left": 0,
+            "bumper_right": 5,
+            "bumper_left": 6,
+            "trigger_right": 7,
+            "trigger_left": 6,
+            "start": 9,
+            "select": 8,
+            "stick_right_click": 11,
+            "stick_left_click": 10,
+            "dpad_up": 12,
+            "dpad_down": 13,
+            "dpad_left": 14,
+            "dpad_right": 15
+        },
+        "axes": {
+            "stick_left_x": 0,
+            "stick_left_y": 1,
+            "stick_right_x": 2,
+            "stick_right_y": 3
+        }
+    }
+}
