@@ -1,3 +1,5 @@
+const Box2d = Box2D(); //Javascript makes no sense. Why can't libraries just work?
+
 const CANVAS_SIZE = {x: 640, y: 480}
 var resolutionScale = 1;
 
@@ -85,19 +87,16 @@ function deltaTime()
     return 1 / 60; //Just slow down if the framerate drops, makes physics easier in the mess that is JS.
 }
 
+// IMPLICIT CASTING WOULD BE NICE RIGHT NOW. WHY CAN'T OPERATOR OVERLOADING BE A THING IN JS.
+
 function p5Vec2b2Vec(p5Vec)
 {
-
+    return new Box2d.b2Vec2(p5Vec.x, p5Vec.y);
 }
 
 function b2Vec2p5Vec(b2Vec)
 {
-
-}
-
-class Vehicle
-{
-
+    return createVector(b2Vec.get_x(), b2Vec.get_y());
 }
 
 function setCanvasSize()
@@ -107,13 +106,50 @@ function setCanvasSize()
     resolutionScale = min(sx, sy);
 }
 
-var carSpr;
-var highwaySpr;
+var physWorld = null;
+
+class GravityBody
+{
+    constructor(scenedef)
+    {
+        this.bodyRadius = scenedef.radius;
+        this.bodyFriction = scenedef.friction;
+        this.bodyRestitution = scenedef.rest;
+        this.density = scenedef.density;
+        this.gravityRadius = scenedef.gravityRadius;
+        this.position = createVector(scenedef.position.x, scenedef.position.y);
+
+        if (physWorld != null)
+        {
+            var fixDef = new Box2d.b2FixtureDef();
+            fixDef.set_restitution(this.bodyRestitution);
+            fixDef.set_density(this.density);
+            var collider = new Box2d.b2CircleShape(this.bodyRadius);
+            fixDef.set_shape(collider);
+            var bodyDef = new Box2d.b2BodyDef();
+            bodyDef.set_position(p5Vec2b2Vec(this.position));
+            var body = physWorld.CreateBody(bodyDef);
+            body.CreateFixture(fixDef);
+            this.physBody = body;
+        }
+        else
+        {
+            console.error("Cannot create a gravity body right now! physWorld is null.");
+        }
+    }
+
+    remove()
+    {
+        if (physWorld != null && this.physBody != null)
+        {
+            physWorld.DestroyBody(this.physBody);
+        }
+    }
+}
+
 function preload()
 {
-    padMap = loadJSON("cfg/controller_map.json");
-    carSpr = loadImage("assets/cars/player/player_car_01.png");
-    highwaySpr = loadImage("assets/env/highway.png");
+
 }
 
 var testObjPos;
@@ -128,6 +164,7 @@ function setup()
     ctx.imageSmoothingEnabled = false;
     cameraPosition = createVector(0, 0);
     testObjPos = createVector(0, 0);
+    physWorld = new Box2d.b2World(new Box2d.b2Vec2(0, 0), true);
 }
 
 function windowResized()
@@ -144,8 +181,6 @@ function draw()
     background(200);
     push();
     scale(resolutionScale);
-    image(highwaySpr, CANVAS_SIZE.x / 2, CANVAS_SIZE.y / 2);
-    image(carSpr, testObjPos.x, testObjPos.y);
 
     if (CONTROLLER_DEBUG_MENU)
     {
