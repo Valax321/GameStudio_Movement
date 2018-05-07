@@ -43,6 +43,15 @@ function setPadIndex()
         }
     }
 
+    //console.log("Total gamepad count: %d", navigator.getGamepads().length);
+
+    if (navigator.getGamepads().length > 0)
+    {
+        padIndex = 0; //Fall back to the first gamepad plugged in
+        console.log("Using fallback controller 0");
+        return;
+    }
+
     console.log("Did not set a valid gamepad!");
 }
 
@@ -108,6 +117,8 @@ function setCanvasSize()
 
 var physWorld = null;
 
+var gravityDotDef = null;
+
 class GravityBody
 {
     constructor(scenedef)
@@ -118,9 +129,11 @@ class GravityBody
         this.density = scenedef.density;
         this.gravityRadius = scenedef.gravityRadius;
         this.position = createVector(scenedef.position.x, scenedef.position.y);
+        this.moveSpeed = scenedef.moveSpeed;
 
         if (physWorld != null)
         {
+            //TODO: convert to a dynamic body
             var fixDef = new Box2d.b2FixtureDef();
             fixDef.set_restitution(this.bodyRestitution);
             fixDef.set_density(this.density);
@@ -138,6 +151,16 @@ class GravityBody
         }
     }
 
+    physics()
+    {
+
+    }
+
+    update()
+    {
+
+    }
+
     remove()
     {
         if (physWorld != null && this.physBody != null)
@@ -147,12 +170,50 @@ class GravityBody
     }
 }
 
+class GravityFollower
+{
+    constructor(body)
+    {
+        this.radius = round(random(3, 8));
+        this.position = p5.Vector.random2D();
+        this.position.mult(random(body.radius + this.radius, body.gravityRadius));
+        this.position.add(body.position);
+        var up = p5.Vector.sub(body.position, this.position);
+        var FIXED_Z = createVector(0, 0, 1);
+        up.normalize(); //Convert it to a direction vector
+        var forward = p5.Vector.cross(up, FIXED_Z);
+        forward.mult(10); //VELOCITY SCALE
+        if (random(0, 1) >= 0.5)
+        {
+            forward.mult(-1); //Flip it 50% of the time
+        }
+        this.body = body;
+    }
+
+    physics()
+    {
+
+    }
+
+    update()
+    {
+
+    }
+
+    remove()
+    {
+
+    }
+}
+
 function preload()
 {
-
+    padMap = loadJSON("cfg/controller_map.json");
+    gravityDotDef = loadJSON("assets/defs/gravdot.json");
 }
 
 var testObjPos;
+var testObj2Pos;
 
 function setup()
 {
@@ -164,6 +225,7 @@ function setup()
     ctx.imageSmoothingEnabled = false;
     cameraPosition = createVector(0, 0);
     testObjPos = createVector(0, 0);
+    testObj2Pos = createVector(0, 0);
     physWorld = new Box2d.b2World(new Box2d.b2Vec2(0, 0), true);
 }
 
@@ -181,6 +243,9 @@ function draw()
     background(200);
     push();
     scale(resolutionScale);
+
+    ellipse(testObjPos.x, testObjPos.y, 10, 10);
+    ellipse(testObj2Pos.x, testObj2Pos.y, 10, 10);
 
     if (CONTROLLER_DEBUG_MENU)
     {
@@ -221,9 +286,14 @@ function controllerDebugMenu()
 function update()
 {
     testObjPos.add(getAxis("stick_left_x") * deltaTime() * 100, getAxis("stick_left_y") * deltaTime() * 100);
+    testObj2Pos.add(getAxis("stick_right_x") * deltaTime() * 100, getAxis("stick_right_y") * deltaTime() * 100);
 }
 
 function physics()
 {
-
+    if (physWorld != null)
+    {
+        physWorld.ClearForces();
+        physWorld.Step(deltaTime());
+    }
 }

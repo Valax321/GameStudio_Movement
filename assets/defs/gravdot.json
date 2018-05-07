@@ -1,0 +1,8 @@
+{
+    "radius": 10,
+    "gravityRadius": 30,
+    "friction": 0.4,
+    "restitution": 0.5,
+    "density": 1,
+    "moveSpeed": 100
+}
