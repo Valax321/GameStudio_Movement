@@ -1,8 +1,12 @@
 {
-    "radius": 10,
+    "radius": 5,
     "gravityRadius": 30,
     "friction": 0.4,
-    "restitution": 0.5,
+    "restitution": 0,
     "density": 1,
-    "moveSpeed": 100
+    "moveSpeed": 100,
+    "acceleration": 10,
+    "deceleration": 2,
+    "puntReset": 2,
+    "spinReset": 1
 }

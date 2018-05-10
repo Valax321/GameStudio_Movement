@@ -6,7 +6,7 @@
             "face_right": 2,
             "face_left": 0,
             "bumper_right": 5,
-            "bumper_left": 6,
+            "bumper_left": 4,
             "trigger_right": 7,
             "trigger_left": 6,
             "start": 9,
@@ -22,7 +22,7 @@
             "stick_left_x": 0,
             "stick_left_y": 1,
             "stick_right_x": 2,
-            "stick_right_y": 5
+            "stick_right_y": 3
         }
     }
 }
